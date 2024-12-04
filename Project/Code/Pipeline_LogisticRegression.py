@@ -24,10 +24,10 @@ def load_data(file_path):
 
     if 'label_sexist' in df.columns:
         print(df['label_sexist'].value_counts(normalize=True))
-        return df['text'], df['label_sexist']
+        return df['text'], df['label_sexist'], df['rewire_id']
     else: 
         print('There is no sexist_label')
-        return df['text']
+        return df['text'], df['rewire_id']
     
     
 
@@ -67,12 +67,13 @@ def train_logistic_regression(X_train_vectorized, y_train, X_val_vectorized, y_v
     return model
 
 # 4. Evaluate model performance on test set
-def evaluate_model(model, X_test_vectorized, y_test_path):
+def evaluate_model(model, X_test_vectorized, y_test_path, vectorizer, test_ids):
 
     # Make predictions
     df_test = pd.read_csv(y_test_path)
     y_test = df_test['label_sexist']
     y_pred = model.predict(X_test_vectorized)
+    y_pred_proba = model.predict_proba(X_test_vectorized)[:, 1]
     
     # Print detailed performance metrics
     print("\nTest Set Performance:")
@@ -94,14 +95,26 @@ def evaluate_model(model, X_test_vectorized, y_test_path):
     print(f"Recall: {recall:.4f}")
     print(f"F1 Score: {f1:.4f}")
 
+    # Create detailed predictions DataFrame
+    predictions_df = pd.DataFrame({
+        'rewire_id': test_ids,
+        'text': vectorizer.inverse_transform(X_test_vectorized),
+        'true_label': y_test,
+        'predicted_label': y_pred,
+        'prediction_probability': y_pred_proba
+    })
+    
+    # Save predictions to CSV
+    predictions_df.to_csv('output/logisticRegression_test_predictions.csv', index=False)
+
 # Main execution
 def main(train_path, val_path, test_path, test_label_path):
 
     # 1. Load data
-    X_train, y_train = load_data(train_path)
-    X_val, y_val = load_data(val_path)
+    X_train, y_train, train_ids = load_data(train_path)
+    X_val, y_val, val_ids = load_data(val_path)
 
-    X_test = load_data(test_path)
+    X_test, test_ids = load_data(test_path)
     
     # 2. Vectorize text
     X_train_vectorized, X_val_vectorized, X_test_vectorized, vectorizer = vectorize_text(
@@ -115,7 +128,7 @@ def main(train_path, val_path, test_path, test_label_path):
     )
     
     # 4. Evaluate model on test set
-    evaluate_model(model, X_test_vectorized, test_label_path)
+    evaluate_model(model, X_test_vectorized, test_label_path, vectorizer, test_ids)
 
 # Run the script
 if __name__ == '__main__':
