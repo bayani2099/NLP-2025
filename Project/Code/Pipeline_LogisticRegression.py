@@ -2,6 +2,9 @@ import pandas as pd
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import GridSearchCV
+from sklearn.pipeline import Pipeline
 from sklearn.metrics import (
     accuracy_score, 
     precision_score, 
@@ -51,20 +54,58 @@ def vectorize_text(X_train, X_val, X_test):
 
 # 3. Train Logistic Regression model
 def train_logistic_regression(X_train_vectorized, y_train, X_val_vectorized, y_val):
-
+    # pipeline for more integrated parameter tuning
+    pipeline = Pipeline([
+        #('tfidf', TfidfVectorizer()),  # You can move your existing vectorization logic here
+        ('clf', LogisticRegression(random_state=42))
+    ])
+    # Define parameter grid for grid search
+    param_grid = {
+        #'tfidf__max_features': [1000, 2000, 5000],
+        #'tfidf__ngram_range': [(1,1), (1,2)],
+        'clf__C': [0.001, 0.01, 0.1, 1, 10, 20],
+        'clf__penalty': ['l2', 'l1'],
+        'clf__solver': ['liblinear'],
+        'clf__max_iter': [100, 200, 500, 1000, 1100],
+        'clf__class_weight': [
+        {0: 0.5, 1: 2.0},
+        {0: 1.0, 1: 1.0},  # Equal weights
+        {0: 0.5, 1: 3.0},
+        {0: 0.2, 1: 3.0},
+        {0: 1, 1: 4.0}
+    ]
+    }
+    # Perform grid search with cross-validation
+    grid_search = GridSearchCV(
+        pipeline, 
+        param_grid, 
+        #cv=5,  # 5-fold cross-validation 
+        scoring='f1_weighted',  # You can change this to other metrics like 'accuracy', 'roc_auc'
+        n_jobs=-1  # Use all available cores
+    )
+    custom_weights = {0: 0.5, 1: 2.0} 
     # Initialize and train the model
     model = LogisticRegression(
-        max_iter=1000,  
-        class_weight='balanced'  
+        penalty = "l1",
+        C=11,
+        solver= "liblinear",
+        max_iter=100,  
+        class_weight=custom_weights#'balanced'  
     )
-    model.fit(X_train_vectorized, y_train)
+    # the following code line can be used for the RandomForestClassifier
+    #model = RandomForestClassifier(n_estimators = 10, criterion='entropy', random_state = 0)
+    grid_search.fit(X_train_vectorized, y_train)
+    #model.fit(X_train_vectorized, y_train)
     
     # Validate model performance
-    val_pred = model.predict(X_val_vectorized)
+    
+    print("Best parameters:", grid_search.best_params_)
+    print("Best cross-validation score:", grid_search.best_score_)
+    val_pred = grid_search.predict(X_val_vectorized)
     print("\nValidation Performance:")
     print(classification_report(y_val, val_pred))
     
-    return model
+    return grid_search
 
 # 4. Evaluate model performance on test set
 def evaluate_model(model, X_test_vectorized, y_test_path, vectorizer, test_ids):
@@ -87,7 +128,7 @@ def evaluate_model(model, X_test_vectorized, y_test_path, vectorizer, test_ids):
     accuracy = accuracy_score(y_test, y_pred)
     precision = precision_score(y_test, y_pred)
     recall = recall_score(y_test, y_pred)
-    f1 = f1_score(y_test, y_pred)
+    f1 = f1_score(y_test, y_pred, average='weighted')
     
     print("\nMetrics Summary:")
     print(f"Accuracy: {accuracy:.4f}")
@@ -105,8 +146,9 @@ def evaluate_model(model, X_test_vectorized, y_test_path, vectorizer, test_ids):
     })
     
     # Save predictions to CSV
-    predictions_df.to_csv('output/logisticRegression_test_predictions.csv', index=False)
-
+    predictions_df.to_csv('output/logisticRegression_test_predictions_optimized.csv', index=False)
+    # the following code line can be used for the RandomForestClassifier
+    #predictions_df.to_csv('output/RandomForest_test_predictions.csv', index=False)
 # Main execution
 def main(train_path, val_path, test_path, test_label_path):
 
