@@ -108,7 +108,7 @@ def train_logistic_regression(X_train_vectorized, y_train, X_val_vectorized, y_v
     return grid_search
 
 # 4. Evaluate model performance on test set
-def evaluate_model(model, X_test_vectorized, y_test_path, vectorizer, test_ids):
+def evaluate_model(model,X_test, X_test_vectorized, y_test_path, vectorizer, test_ids):
 
     # Make predictions
     df_test = pd.read_csv(y_test_path)
@@ -139,7 +139,8 @@ def evaluate_model(model, X_test_vectorized, y_test_path, vectorizer, test_ids):
     # Create detailed predictions DataFrame
     predictions_df = pd.DataFrame({
         'rewire_id': test_ids,
-        'text': vectorizer.inverse_transform(X_test_vectorized),
+        'text': X_test,
+        'tokenized_text': vectorizer.inverse_transform(X_test_vectorized),
         'true_label': y_test,
         'predicted_label': y_pred,
         'prediction_probability': y_pred_proba
@@ -170,7 +171,7 @@ def main(train_path, val_path, test_path, test_label_path):
     )
     
     # 4. Evaluate model on test set
-    evaluate_model(model, X_test_vectorized, test_label_path, vectorizer, test_ids)
+    evaluate_model(model, X_test, X_test_vectorized, test_label_path, vectorizer, test_ids)
 
 # Run the script
 if __name__ == '__main__':
