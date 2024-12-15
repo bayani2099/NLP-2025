@@ -1,0 +1,33 @@
+1.GENDER BASED SEXISM- e.g. "i would pay to see her ass cracker nsfw." is classified as non-sexist, instead it is a sexist phrase. 
+The point here debatable is that if this sentence is used for a women, it definitely falls in the sexist category but if this sentence is used for 
+a man this can be sexist or not but would be more inclined towards the "making a joke on someone" or can be the " boys use such languages for one another 
+situation (which is in itself a sexist reasoning :D" 
+In this specific case, the model fails to correctly identify the term"ass cracker" which is the core of the statement and represents a negative term ideally,
+but the question is for which gender.It brings us down to the question how is a statement, if we do not know for which gender it is used for, would be considered 
+sexist or non-sexist.
+
+2.SLANGS -  Slang words confuses the model,  these words are extremely personal and holds different meanings for different people and the model is not always able 
+to associate the right meaning , it is also a very cultural aspect, some cultures consider a particular word or animal name as auspicious while for the other it is 
+considered as a cuss word.
+Slangs also keep on changing generation wise, every generation has their own commonly used slangs and thats why the boomers find it difficult to keep up with the new generations slangs.
+
+3.The model usually classifies offensive phrases as sexist, and conversely, sexist phrases that perhaps do not contain insults or negative terms are more likely 
+to be misclassified as non-sexist phrases. This is justified by the argument that the model was pre-trained on a hate speech dataset. To be more detailed,
+sentence "Because they’re afraid of confrontation, a woman will always escape" is sexist and does not contain any particular offensive terms, yet it is 
+classified as non-sexist by the model. In contrast, the sentence "If my daughter got pregnant from this shit, That judge has a lawsuit coming!" is non-sexist 
+but contains derogatory terms, in which case the model makes the opposite error.
+
+4.The model also confuses the sexism comments and the racist comments. It is clearly unable to differentiate in sexism and racism as there is usually a very fine 
+boundary between the two. eg- 
+
+5.Gender bias with some words - eg - "this bith should be stoped shes the rapist", the model detects this as non-sexist. but if the same sentence was used for a boy,
+ then it woud fall in the sexist category. But to an extent, this word is rightly predicted.
+
+6.Praises or appreciations confused as sexism - Now this is another challenge where a statement is understood as a appeciation by one person but sexist by another
+ person, the model clearly does not understand such fine lines. for eg - "with interior decorating skills like yours girls will be falling all over you im falling
+ for you a little myself" is considered non-sexist by the model, here this is said for a boy, where it is assumed that girls are better in interior decorating skills, but as it is a matter of perspective and how sensitive a person is regarding the sexism or maybe how well does one understand this concept, is still debatable.
+
+7.Future research in this area could explore the use of other regularization techniques or investigate the impact of different hyperparameters on model performance
+ and uses specific data preprocessing techniques. In addition, it might be interesting to use a hierarchical approach to these classification tasks to check for
+ variations in the performances.Furthermore the performance gains from data augmentation were not well suited for every model, and future work should explore more
+ effective techniques for augmenting informal text datasets.
