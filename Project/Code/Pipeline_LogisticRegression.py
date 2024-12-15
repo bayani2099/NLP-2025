@@ -88,7 +88,7 @@ def train_logistic_regression(X_train_vectorized, y_train, X_val_vectorized, y_v
         #penalty = "l1",
         #C=11,
         #solver= "liblinear",
-        max_iter=1000,#100,  
+        max_iter=1000, #100,  
         class_weight='balanced' #custom_weights#'balanced'  
     )
     # the following code line can be used for the RandomForestClassifier
