@@ -10,7 +10,7 @@ To solve this classification task, we built and compared two models:
 1. **Logistic Regression**: A non-deep learning approach serving as a baseline.
 2. **RoBERTa**: A state-of-the-art transformer-based deep learning model.
 
-The results of both models, along with an in-depth analysis, are provided in the project's structure.
+The notebooks in the Code folder contain detailed information about the implementation and the results of the analysis.
 
 ---
 
