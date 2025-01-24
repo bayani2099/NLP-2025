@@ -26,6 +26,10 @@ This folder contains the core implementation of the models and related analyses:
 ### **2. Relevant Documents**
 This folder includes additional analyses and findings:
 - Text files with detailed observations and conclusions drawn from the project.
+- A Analysis summary of the key worda and patterns we found
+- Guidelines to define Sexism
+- Management summary
+- Presentation slides
 
 ### **3. Data**
 The **Data** folder contains the input dataset with two subfolders:
